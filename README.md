@@ -32,9 +32,63 @@ app = Sanic()
 
 @app.route("/")
 async def test(request):
-    return json({"hello": "world"})
+    return json({"hello": "sanic"})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 ```
+
+ manage.py
+
+```python
+from app import app
+
+
+app.run(host="0.0.0.0", port=5000)
+
+```
+
+---
+
+
+
+## 使用docker对项目进行打包与部署
+
+**编写Dockerfile**
+
+Dockerfile
+
+```SAS
+FROM Python:3.6
+
+COPY src/ /opt/app
+WORKDIR /opt/app
+
+RUN curl -s http://ip-api.com | grep China > /dev/null && \
+    pip install -i https://pypi.doubanio.com/simple --trusted-host pypi.doubanio.com sanic
+
+EXPOSE 5000
+
+CMD sleep 999999999
+```
+
+
+
+**使用Dockerfile构建这个项目的镜像**
+
+```shell
+docker build .
+```
+
+---
+
+**使用刚才创建的镜像创建并运行容器**
+
+```shell
+docker run -p 5000:5000 image
+```
+
+---
+
+**进入容器并运行sanic**
 
